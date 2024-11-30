@@ -1,0 +1,47 @@
+%implements s4_b0_9jbds_Derivatives "C"
+
+%function Derivatives(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+XDot_Model_T *_rtXdot;
+%closefile localVarDecl
+_rtXdot = %<(SLibCG_SE(SLibGetContStatesDerivativeStructPtr()))>;
+/* Derivatives for Integrator: '<S5>/Integrator3' */
+_rtXdot->Integrator3_CSTATE = Model_B.IC;
+/* Derivatives for Integrator: '<S5>/Integrator6' */
+_rtXdot->Integrator6_CSTATE = Model_B.YACCms2;
+/* Derivatives for Integrator: '<S5>/Integrator4' */
+_rtXdot->Integrator4_CSTATE = Model_B.IC2;
+/* Derivatives for Integrator: '<S34>/Integrator2' */
+_rtXdot->Integrator2_CSTATE = Model_B.Gain1;
+/* Derivatives for Integrator: '<S35>/Integrator2' */
+_rtXdot->Integrator2_CSTATE_o = Model_B.Gain1_b;
+/* Derivatives for Integrator: '<S37>/Integrator1' */
+_rtXdot->Integrator1_CSTATE = Model_B.Gain1_n;
+/* Derivatives for Integrator: '<S36>/Integrator1' */
+_rtXdot->Integrator1_CSTATE_o = Model_B.Gain1_c;
+/* Derivatives for Integrator: '<S5>/Integrator' */
+_rtXdot->Integrator_CSTATE = Model_B.IC;
+/* Derivatives for Integrator: '<S5>/Integrator1' */
+_rtXdot->Integrator1_CSTATE_i = Model_B.IC2;
+/* Derivatives for Integrator: '<S5>/Integrator2' */
+_rtXdot->Integrator2_CSTATE_i = Model_B.IC1;
+/* Derivatives for Integrator: '<S5>/Integrator5' */
+_rtXdot->Integrator5_CSTATE = Model_B.V_xms;
+/* Derivatives for Integrator: '<S5>/Integrator7' */
+_rtXdot->Integrator7_CSTATE = Model_B.V_yms;
+%closefile cfgTxt
+%<cfgTxt>
+%<LibSetSystemField(system, "CachedDerivativeLocalVars", localVarDecl)>
+%endfunction
+%function DerivativesFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Derivatives(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 3, fcnProtoType)>
+%endfunction

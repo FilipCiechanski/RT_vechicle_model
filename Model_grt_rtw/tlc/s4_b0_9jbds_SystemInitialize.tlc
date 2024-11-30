@@ -1,0 +1,45 @@
+%implements s4_b0_9jbds_SystemInitialize "C"
+
+%function SystemInitialize(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%<SLibInsertAsyncTaskInitializeCode(system)>
+%<SLibWriteMachineInitialize()>
+/* InitializeConditions for Integrator: '<S5>/Integrator3' */
+Model_X.Integrator3_CSTATE = Model_P.Integrator3_IC;
+/* InitializeConditions for Integrator: '<S5>/Integrator6' */
+Model_X.Integrator6_CSTATE = Model_P.Integrator6_IC;
+/* InitializeConditions for Integrator: '<S5>/Integrator4' */
+Model_X.Integrator4_CSTATE = Model_P.Integrator4_IC;
+/* InitializeConditions for Integrator: '<S34>/Integrator2' */
+Model_X.Integrator2_CSTATE = Model_P.Integrator2_IC;
+/* InitializeConditions for Integrator: '<S35>/Integrator2' */
+Model_X.Integrator2_CSTATE_o = Model_P.Integrator2_IC_i;
+/* InitializeConditions for Integrator: '<S37>/Integrator1' */
+Model_X.Integrator1_CSTATE = Model_P.Integrator1_IC;
+/* InitializeConditions for Integrator: '<S36>/Integrator1' */
+Model_X.Integrator1_CSTATE_o = Model_P.Integrator1_IC_d;
+/* InitializeConditions for Integrator: '<S5>/Integrator' */
+Model_X.Integrator_CSTATE = Model_P.Integrator_IC;
+/* InitializeConditions for Integrator: '<S5>/Integrator1' */
+Model_X.Integrator1_CSTATE_i = Model_P.Integrator1_IC_o;
+/* InitializeConditions for Integrator: '<S5>/Integrator2' */
+Model_X.Integrator2_CSTATE_i = Model_P.Integrator2_IC_m;
+/* InitializeConditions for Integrator: '<S5>/Integrator5' */
+Model_X.Integrator5_CSTATE = Model_P.Integrator5_IC;
+/* InitializeConditions for Integrator: '<S5>/Integrator7' */
+Model_X.Integrator7_CSTATE = Model_P.Integrator7_IC;
+%<SLibInsertInitPeriodicCStatesFcn(system)>
+%closefile cfgTxt
+%<cfgTxt>
+%<LibSetSystemField(system, "CachedSystemInitializeLocalVars", localVarDecl)>
+%endfunction
+%function SystemInitializeFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void SystemInitialize(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 1, fcnProtoType)>
+%endfunction

@@ -1,0 +1,41 @@
+%implements s4_b0_9jbds_Start "C"
+
+%function Start(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+/* Start for InitialCondition: '<S5>/IC' */
+Model_DW.IC_FirstOutputTime = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S5>/IC2' */
+Model_DW.IC2_FirstOutputTime = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S19>/IC4' */
+Model_DW.IC4_FirstOutputTime = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S34>/IC' */
+Model_DW.IC_FirstOutputTime_d = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S35>/IC' */
+Model_DW.IC_FirstOutputTime_h = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S37>/IC' */
+Model_DW.IC_FirstOutputTime_a = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S36>/IC' */
+Model_DW.IC_FirstOutputTime_g = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S19>/IC5' */
+Model_DW.IC5_FirstOutputTime = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S6>/IC1' */
+Model_DW.IC1_FirstOutputTime = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S5>/IC1' */
+Model_DW.IC1_FirstOutputTime_d = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S6>/IC' */
+Model_DW.IC_FirstOutputTime_f = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+/* Start for InitialCondition: '<S6>/IC2' */
+Model_DW.IC2_FirstOutputTime_j = %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>;
+%closefile cfgTxt
+%<cfgTxt>
+%endfunction
+%function StartFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Start(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 0, fcnProtoType)>
+%endfunction

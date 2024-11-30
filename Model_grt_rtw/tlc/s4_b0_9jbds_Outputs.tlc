@@ -1,0 +1,583 @@
+%implements s4_b0_9jbds_Outputs "C"
+
+%function Outputs(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+real_T Gain1_c_tmp;
+real_T rtb_BrakeTorque;
+real_T rtb_Gain2;
+real_T rtb_IC4_idx_1;
+real_T rtb_IC4_idx_2;
+real_T rtb_IC4_idx_3;
+real_T rtb_IC5_idx_3;
+real_T rtb_MotorTorqueNm;
+real_T rtb_SteeringangleIN;
+real_T rtb_Subtract_p;
+real_T rtb_uDLookupTable;
+real_T rtb_uDLookupTable1_e;
+%closefile localVarDecl
+/* {S!d622}Integrator: '<S5>/Integrator3' */
+Model_B.V_xms = Model_X.Integrator3_CSTATE;
+/* {S!d624}InitialCondition: '<S5>/IC' incorporates:
+ *  InitialCondition: '<S19>/IC4'
+ *  InitialCondition: '<S19>/IC5'
+ *  InitialCondition: '<S34>/IC'
+ *  InitialCondition: '<S35>/IC'
+ *  InitialCondition: '<S36>/IC'
+ *  InitialCondition: '<S37>/IC'
+ *  InitialCondition: '<S5>/IC1'
+ *  InitialCondition: '<S5>/IC2'
+ *  InitialCondition: '<S6>/IC'
+ *  InitialCondition: '<S6>/IC1'
+ *  InitialCondition: '<S6>/IC2'
+ */
+Gain1_c_tmp = %<(SLibCG_SE(LibGetTaskTime(0)))>;
+if ((Model_DW.IC_FirstOutputTime == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC_FirstOutputTime == Gain1_c_tmp)) {
+    Model_DW.IC_FirstOutputTime = Gain1_c_tmp;
+    rtb_uDLookupTable = Model_P.IC_Value;
+} else {
+    rtb_uDLookupTable = Model_B.V_xms;
+}
+/* {S!d626}Gain: '<S1>/Gain2' incorporates:
+ *  Gain: '<S1>/Gain1'
+ *  Gain: '<S1>/Gain4'
+ *  Math: '<S1>/Square'
+ */
+rtb_Gain2 = rtb_uDLookupTable * rtb_uDLookupTable * Model_P.A * Model_P.air_density * Model_P.Gain2_Gain;
+if (%<(SLibCGIRIsSampleHit(1, 4))>) {
+    /* {S!d628}Gain: '<S8>/Gain1' incorporates:
+ *  Constant: '<S2>/Constant2'
+ */
+    rtb_BrakeTorque = Model_P.Gain1_Gain_l * Model_P.Constant2_Value;
+    /* {S!d630}Abs: '<S2>/Abs' */
+    rtb_MotorTorqueNm = std::abs(rtb_BrakeTorque);
+    /* {S!d632}Lookup_n-D: '<S2>/1-D Lookup Table' incorporates:
+ *  Lookup_n-D: '<S3>/1-D Lookup Table'
+ */
+    rtb_SteeringangleIN = look1_binlxpw(rtb_MotorTorqueNm, Model_P.uDLookupTable_bp01Data, Model_P.uDLookupTable_tableData, 21U);
+    /* {S!d634}Lookup_n-D: '<S2>/1-D Lookup Table1' incorporates:
+ *  Lookup_n-D: '<S3>/1-D Lookup Table'
+ */
+    rtb_MotorTorqueNm = look1_binlxpw(rtb_MotorTorqueNm, Model_P.uDLookupTable1_bp01Data, Model_P.uDLookupTable1_tableData, 21U);
+    /* {S!d640}Switch: '<S2>/Switch' */
+    if (rtb_BrakeTorque > Model_P.Switch_Threshold) {
+        /* {S!d636}Switch: '<S2>/Switch' */
+        Model_B.SteeringangleFL = rtb_MotorTorqueNm;
+    } else {
+        /* {S!d638}Switch: '<S2>/Switch' incorporates:
+ *  Gain: '<S2>/Gain'
+ */
+        Model_B.SteeringangleFL = Model_P.Gain_Gain * rtb_SteeringangleIN;
+    }
+    /* {E!d640}End of Switch: '<S2>/Switch' */
+
+    /* {S!d646}Switch: '<S2>/Switch1' */
+    if (rtb_BrakeTorque > Model_P.Switch1_Threshold) {
+        /* {S!d642}Switch: '<S2>/Switch1' */
+        Model_B.SteeringangleFR = rtb_SteeringangleIN;
+    } else {
+        /* {S!d644}Switch: '<S2>/Switch1' incorporates:
+ *  Gain: '<S2>/Gain1'
+ */
+        Model_B.SteeringangleFR = Model_P.Gain1_Gain * rtb_MotorTorqueNm;
+    }
+    /* {E!d646}End of Switch: '<S2>/Switch1' */
+
+    /* {S!d648}Saturate: '<S2>/Saturation' incorporates:
+ *  Constant: '<S2>/Constant'
+ */
+    if (Model_P.Constant_Value > Model_P.Saturation_UpperSat_n) {
+        rtb_uDLookupTable1_e = Model_P.Saturation_UpperSat_n;
+    } else if (Model_P.Constant_Value < Model_P.Saturation_LowerSat_j) {
+        rtb_uDLookupTable1_e = Model_P.Saturation_LowerSat_j;
+    } else {
+        rtb_uDLookupTable1_e = Model_P.Constant_Value;
+    }
+    /* {S!d650}Gain: '<S3>/Gain' incorporates:
+ *  Lookup_n-D: '<S3>/1-D Lookup Table'
+ *  Saturate: '<S2>/Saturation'
+ */
+    Model_B.MotorTorque = Model_P.Gain_Gain_b * look1_binlxpw(rtb_uDLookupTable1_e, Model_P.uDLookupTable_bp01Data_c, Model_P.uDLookupTable_tableData_d, 1U);
+    /* {S!d652}Gain: '<S3>/Gain1' incorporates:
+ *  Constant: '<S2>/Constant1'
+ *  Lookup_n-D: '<S3>/1-D Lookup Table1'
+ */
+    Model_B.BrakeTorque = Model_P.Gain1_Gain_lp * look1_binlxpw(Model_P.Constant1_Value, Model_P.uDLookupTable1_bp01Data_d, Model_P.uDLookupTable1_tableData_d, 10U);
+    /* {S!d654}Trigonometry: '<S12>/Cos' */
+    Model_B.Cos = std::cos(Model_B.SteeringangleFL);
+}
+/* {S!d656}Integrator: '<S5>/Integrator4' */
+rtb_uDLookupTable1_e = Model_X.Integrator4_CSTATE;
+/* {S!d658}InitialCondition: '<S5>/IC2' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC2_FirstOutputTime == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC2_FirstOutputTime == Gain1_c_tmp)) {
+    Model_DW.IC2_FirstOutputTime = Gain1_c_tmp;
+    rtb_uDLookupTable1_e = Model_P.IC2_Value;
+}
+/* {S!d660}Product: '<S24>/Product1' incorporates:
+ *  Constant: '<S24>/Constant1'
+ *  Product: '<S25>/Product1'
+ */
+rtb_IC4_idx_3 = rtb_uDLookupTable1_e * Model_P.half_track;
+/* {S!d662}Sum: '<S24>/Subtract' incorporates:
+ *  Constant: '<S24>/Constant'
+ *  Integrator: '<S5>/Integrator6'
+ *  Product: '<S24>/Product'
+ *  Sum: '<S25>/Subtract'
+ */
+rtb_MotorTorqueNm = Model_P.lf * rtb_uDLookupTable1_e + Model_X.Integrator6_CSTATE;
+/* {S!d664}Sum: '<S24>/Subtract1' incorporates:
+ *  Product: '<S24>/Product1'
+ *  Sum: '<S26>/Subtract1'
+ */
+rtb_IC4_idx_2 = rtb_uDLookupTable - rtb_IC4_idx_3;
+/* {S!d666}Sum: '<S24>/Subtract2' incorporates:
+ *  Product: '<S24>/Divide'
+ *  Sum: '<S24>/Subtract'
+ *  Sum: '<S24>/Subtract1'
+ */
+rtb_SteeringangleIN = rtb_MotorTorqueNm / rtb_IC4_idx_2 - Model_B.SteeringangleFL;
+/* {S!d668}Saturate: '<S19>/Saturation4' */
+if (rtb_SteeringangleIN > Model_P.Saturation4_UpperSat) {
+    rtb_SteeringangleIN = Model_P.Saturation4_UpperSat;
+} else if (rtb_SteeringangleIN < Model_P.Saturation4_LowerSat) {
+    rtb_SteeringangleIN = Model_P.Saturation4_LowerSat;
+}
+/* {S!d670}Gain: '<S20>/Gain' incorporates:
+ *  Saturate: '<S19>/Saturation4'
+ */
+rtb_BrakeTorque = Model_P.Gain_Gain_h * rtb_SteeringangleIN;
+/* {S!d672}Sum: '<S25>/Subtract1' incorporates:
+ *  Sum: '<S27>/Subtract1'
+ */
+rtb_IC4_idx_3 += rtb_uDLookupTable;
+/* {S!d674}Sum: '<S25>/Subtract2' incorporates:
+ *  Product: '<S25>/Divide'
+ *  Sum: '<S25>/Subtract1'
+ */
+rtb_SteeringangleIN = rtb_MotorTorqueNm / rtb_IC4_idx_3 - Model_B.SteeringangleFR;
+/* {S!d676}Saturate: '<S19>/Saturation4' */
+if (rtb_SteeringangleIN > Model_P.Saturation4_UpperSat) {
+    rtb_SteeringangleIN = Model_P.Saturation4_UpperSat;
+} else if (rtb_SteeringangleIN < Model_P.Saturation4_LowerSat) {
+    rtb_SteeringangleIN = Model_P.Saturation4_LowerSat;
+}
+/* {S!d678}Gain: '<S20>/Gain' incorporates:
+ *  Saturate: '<S19>/Saturation4'
+ */
+rtb_IC4_idx_1 = Model_P.Gain_Gain_h * rtb_SteeringangleIN;
+/* {S!d680}Sum: '<S26>/Subtract' incorporates:
+ *  Constant: '<S26>/Constant'
+ *  Integrator: '<S5>/Integrator6'
+ *  Product: '<S26>/Product'
+ *  Sum: '<S27>/Subtract'
+ */
+rtb_MotorTorqueNm = Model_X.Integrator6_CSTATE - Model_P.lr * rtb_uDLookupTable1_e;
+/* {S!d682}Product: '<S26>/Divide' incorporates:
+ *  Sum: '<S26>/Subtract'
+ */
+rtb_SteeringangleIN = rtb_MotorTorqueNm / rtb_IC4_idx_2;
+/* {S!d684}Saturate: '<S19>/Saturation4' */
+if (rtb_SteeringangleIN > Model_P.Saturation4_UpperSat) {
+    rtb_SteeringangleIN = Model_P.Saturation4_UpperSat;
+} else if (rtb_SteeringangleIN < Model_P.Saturation4_LowerSat) {
+    rtb_SteeringangleIN = Model_P.Saturation4_LowerSat;
+}
+/* {S!d686}Gain: '<S20>/Gain' incorporates:
+ *  Saturate: '<S19>/Saturation4'
+ */
+rtb_IC4_idx_2 = Model_P.Gain_Gain_h * rtb_SteeringangleIN;
+/* {S!d688}Product: '<S27>/Divide' */
+rtb_SteeringangleIN = rtb_MotorTorqueNm / rtb_IC4_idx_3;
+/* {S!d690}Saturate: '<S19>/Saturation4' */
+if (rtb_SteeringangleIN > Model_P.Saturation4_UpperSat) {
+    rtb_SteeringangleIN = Model_P.Saturation4_UpperSat;
+} else if (rtb_SteeringangleIN < Model_P.Saturation4_LowerSat) {
+    rtb_SteeringangleIN = Model_P.Saturation4_LowerSat;
+}
+/* {S!d692}Gain: '<S20>/Gain' incorporates:
+ *  Saturate: '<S19>/Saturation4'
+ */
+rtb_IC4_idx_3 = Model_P.Gain_Gain_h * rtb_SteeringangleIN;
+/* {S!d694}InitialCondition: '<S19>/IC4' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC4_FirstOutputTime == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC4_FirstOutputTime == Gain1_c_tmp)) {
+    Model_DW.IC4_FirstOutputTime = Gain1_c_tmp;
+    rtb_BrakeTorque = Model_P.IC4_Value;
+    rtb_IC4_idx_1 = Model_P.IC4_Value;
+    rtb_IC4_idx_2 = Model_P.IC4_Value;
+    rtb_IC4_idx_3 = Model_P.IC4_Value;
+}
+/* {S!d696}Lookup_n-D: '<S15>/2-D Lookup Table' incorporates:
+ *  Constant: '<S4>/Constant1'
+ */
+rtb_BrakeTorque = look2_binlxpw(Model_P.Constant1_Value_f, rtb_BrakeTorque, Model_P.Fz, Model_P.SA, Model_P.Fy, Model_P.uDLookupTable_maxIndex, 41U);
+if (%<(SLibCGIRIsSampleHit(1, 4))>) {
+    /* {S!d698}Trigonometry: '<S12>/Cos1' */
+    Model_B.Cos1 = std::cos(Model_B.SteeringangleFR);
+    /* {S!d700}Trigonometry: '<S12>/Sin' incorporates:
+ *  Gain: '<S12>/Gain2'
+ */
+    Model_B.Sin = std::sin(Model_P.Gain2_Gain_b * Model_B.SteeringangleFL);
+}
+/* {S!d702}Lookup_n-D: '<S16>/2-D Lookup Table' incorporates:
+ *  Constant: '<S4>/Constant2'
+ */
+rtb_SteeringangleIN = look2_binlxpw(Model_P.Constant2_Value_i, rtb_IC4_idx_1, Model_P.Fz, Model_P.SA, Model_P.Fy, Model_P.uDLookupTable_maxIndex_a, 41U);
+/* {S!d704}Saturate: '<S34>/Saturation' */
+if (Model_X.Integrator2_CSTATE > Model_P.Saturation_UpperSat_p) {
+    rtb_MotorTorqueNm = Model_P.Saturation_UpperSat_p;
+} else if (Model_X.Integrator2_CSTATE < Model_P.Saturation_LowerSat_c) {
+    rtb_MotorTorqueNm = Model_P.Saturation_LowerSat_c;
+} else {
+    rtb_MotorTorqueNm = Model_X.Integrator2_CSTATE;
+}
+/* {E!d704}End of Saturate: '<S34>/Saturation' */
+
+/* {S!d706}InitialCondition: '<S34>/IC' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC_FirstOutputTime_d == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC_FirstOutputTime_d == Gain1_c_tmp)) {
+    Model_DW.IC_FirstOutputTime_d = Gain1_c_tmp;
+    rtb_MotorTorqueNm = Model_P.IC_Value_j;
+}
+/* {S!d708}Sum: '<S31>/Subtract' incorporates:
+ *  Constant: '<S31>/Constant'
+ *  Constant: '<S31>/Constant4'
+ *  Product: '<S31>/Divide'
+ */
+rtb_uDLookupTable1_e = Model_P.tire_radius * rtb_MotorTorqueNm / rtb_uDLookupTable - Model_P.Constant_Value_m;
+/* {S!d710}Saturate: '<S35>/Saturation' */
+if (Model_X.Integrator2_CSTATE_o > Model_P.Saturation_UpperSat_j) {
+    rtb_MotorTorqueNm = Model_P.Saturation_UpperSat_j;
+} else if (Model_X.Integrator2_CSTATE_o < Model_P.Saturation_LowerSat_l) {
+    rtb_MotorTorqueNm = Model_P.Saturation_LowerSat_l;
+} else {
+    rtb_MotorTorqueNm = Model_X.Integrator2_CSTATE_o;
+}
+/* {E!d710}End of Saturate: '<S35>/Saturation' */
+
+/* {S!d712}InitialCondition: '<S35>/IC' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC_FirstOutputTime_h == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC_FirstOutputTime_h == Gain1_c_tmp)) {
+    Model_DW.IC_FirstOutputTime_h = Gain1_c_tmp;
+    rtb_MotorTorqueNm = Model_P.IC_Value_g;
+}
+/* {S!d714}Sum: '<S30>/Subtract' incorporates:
+ *  Constant: '<S30>/Constant'
+ *  Constant: '<S30>/Constant4'
+ *  Product: '<S30>/Divide'
+ */
+rtb_Subtract_p = Model_P.tire_radius * rtb_MotorTorqueNm / rtb_uDLookupTable - Model_P.Constant_Value_i;
+/* {S!d716}Saturate: '<S37>/Saturation' */
+if (Model_X.Integrator1_CSTATE > Model_P.Saturation_UpperSat_m) {
+    rtb_MotorTorqueNm = Model_P.Saturation_UpperSat_m;
+} else if (Model_X.Integrator1_CSTATE < Model_P.Saturation_LowerSat_f) {
+    rtb_MotorTorqueNm = Model_P.Saturation_LowerSat_f;
+} else {
+    rtb_MotorTorqueNm = Model_X.Integrator1_CSTATE;
+}
+/* {E!d716}End of Saturate: '<S37>/Saturation' */
+
+/* {S!d718}InitialCondition: '<S37>/IC' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC_FirstOutputTime_a == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC_FirstOutputTime_a == Gain1_c_tmp)) {
+    Model_DW.IC_FirstOutputTime_a = Gain1_c_tmp;
+    rtb_MotorTorqueNm = Model_P.IC_Value_h;
+}
+/* {S!d720}Sum: '<S32>/Subtract' incorporates:
+ *  Constant: '<S32>/Constant'
+ *  Constant: '<S32>/Constant4'
+ *  Product: '<S32>/Divide'
+ */
+rtb_IC4_idx_1 = Model_P.tire_radius * rtb_MotorTorqueNm / rtb_uDLookupTable - Model_P.Constant_Value_o;
+/* {S!d722}Saturate: '<S36>/Saturation' */
+if (Model_X.Integrator1_CSTATE_o > Model_P.Saturation_UpperSat_h) {
+    rtb_MotorTorqueNm = Model_P.Saturation_UpperSat_h;
+} else if (Model_X.Integrator1_CSTATE_o < Model_P.Saturation_LowerSat_a) {
+    rtb_MotorTorqueNm = Model_P.Saturation_LowerSat_a;
+} else {
+    rtb_MotorTorqueNm = Model_X.Integrator1_CSTATE_o;
+}
+/* {E!d722}End of Saturate: '<S36>/Saturation' */
+
+/* {S!d724}InitialCondition: '<S36>/IC' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC_FirstOutputTime_g == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC_FirstOutputTime_g == Gain1_c_tmp)) {
+    Model_DW.IC_FirstOutputTime_g = Gain1_c_tmp;
+    rtb_MotorTorqueNm = Model_P.IC_Value_hg;
+}
+/* {S!d742}Switch: '<S19>/Switch' incorporates:
+ *  Saturate: '<S19>/Saturation1'
+ */
+if (rtb_uDLookupTable > Model_P.Switch_Threshold_j) {
+    /* {S!d726}Saturate: '<S19>/Saturation' */
+    if (rtb_uDLookupTable1_e > Model_P.Saturation_UpperSat) {
+        rtb_uDLookupTable1_e = Model_P.Saturation_UpperSat;
+    } else if (rtb_uDLookupTable1_e < Model_P.Saturation_LowerSat) {
+        rtb_uDLookupTable1_e = Model_P.Saturation_LowerSat;
+    }
+    if (rtb_Subtract_p > Model_P.Saturation_UpperSat) {
+        rtb_Subtract_p = Model_P.Saturation_UpperSat;
+    } else if (rtb_Subtract_p < Model_P.Saturation_LowerSat) {
+        rtb_Subtract_p = Model_P.Saturation_LowerSat;
+    }
+    if (rtb_IC4_idx_1 > Model_P.Saturation_UpperSat) {
+        rtb_IC4_idx_1 = Model_P.Saturation_UpperSat;
+    } else if (rtb_IC4_idx_1 < Model_P.Saturation_LowerSat) {
+        rtb_IC4_idx_1 = Model_P.Saturation_LowerSat;
+    }
+    /* {S!d728}Sum: '<S33>/Subtract' incorporates:
+ *  Constant: '<S33>/Constant'
+ *  Constant: '<S33>/Constant4'
+ *  Product: '<S33>/Divide'
+ */
+    rtb_IC5_idx_3 = Model_P.tire_radius * rtb_MotorTorqueNm / rtb_uDLookupTable - Model_P.Constant_Value_j;
+    /* {S!d730}Saturate: '<S19>/Saturation' */
+    if (rtb_IC5_idx_3 > Model_P.Saturation_UpperSat) {
+        rtb_IC5_idx_3 = Model_P.Saturation_UpperSat;
+    } else if (rtb_IC5_idx_3 < Model_P.Saturation_LowerSat) {
+        rtb_IC5_idx_3 = Model_P.Saturation_LowerSat;
+    }
+} else {
+    if (rtb_uDLookupTable1_e > Model_P.Saturation1_UpperSat) {
+        /* {S!d732}Saturate: '<S19>/Saturation1' */
+        rtb_uDLookupTable1_e = Model_P.Saturation1_UpperSat;
+    } else if (rtb_uDLookupTable1_e < Model_P.Saturation1_LowerSat) {
+        /* {S!d734}Saturate: '<S19>/Saturation1' */
+        rtb_uDLookupTable1_e = Model_P.Saturation1_LowerSat;
+    }
+    /* {S!d736}Saturate: '<S19>/Saturation1' */
+    if (rtb_Subtract_p > Model_P.Saturation1_UpperSat) {
+        rtb_Subtract_p = Model_P.Saturation1_UpperSat;
+    } else if (rtb_Subtract_p < Model_P.Saturation1_LowerSat) {
+        rtb_Subtract_p = Model_P.Saturation1_LowerSat;
+    }
+    if (rtb_IC4_idx_1 > Model_P.Saturation1_UpperSat) {
+        rtb_IC4_idx_1 = Model_P.Saturation1_UpperSat;
+    } else if (rtb_IC4_idx_1 < Model_P.Saturation1_LowerSat) {
+        rtb_IC4_idx_1 = Model_P.Saturation1_LowerSat;
+    }
+    /* {S!d738}Sum: '<S33>/Subtract' incorporates:
+ *  Constant: '<S33>/Constant'
+ *  Constant: '<S33>/Constant4'
+ *  Product: '<S33>/Divide'
+ */
+    rtb_IC5_idx_3 = Model_P.tire_radius * rtb_MotorTorqueNm / rtb_uDLookupTable - Model_P.Constant_Value_j;
+    /* {S!d740}Saturate: '<S19>/Saturation1' */
+    if (rtb_IC5_idx_3 > Model_P.Saturation1_UpperSat) {
+        rtb_IC5_idx_3 = Model_P.Saturation1_UpperSat;
+    } else if (rtb_IC5_idx_3 < Model_P.Saturation1_LowerSat) {
+        rtb_IC5_idx_3 = Model_P.Saturation1_LowerSat;
+    }
+}
+/* {E!d742}End of Switch: '<S19>/Switch' */
+
+/* {S!d744}InitialCondition: '<S19>/IC5' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC5_FirstOutputTime == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC5_FirstOutputTime == Gain1_c_tmp)) {
+    Model_DW.IC5_FirstOutputTime = Gain1_c_tmp;
+    rtb_uDLookupTable1_e = Model_P.IC5_Value;
+    rtb_Subtract_p = Model_P.IC5_Value;
+    rtb_IC4_idx_1 = Model_P.IC5_Value;
+    rtb_IC5_idx_3 = Model_P.IC5_Value;
+}
+/* {S!d746}Lookup_n-D: '<S15>/2-D Lookup Table1' incorporates:
+ *  Constant: '<S4>/Constant1'
+ */
+rtb_MotorTorqueNm = look2_binlxpw(Model_P.Constant1_Value_f, rtb_uDLookupTable1_e, Model_P.Fz, Model_P.SR, Model_P.Fx, Model_P.uDLookupTable1_maxIndex, 41U);
+if (%<(SLibCGIRIsSampleHit(1, 4))>) {
+    /* {S!d748}Trigonometry: '<S12>/Sin1' incorporates:
+ *  Gain: '<S12>/Gain3'
+ */
+    Model_B.Sin1 = std::sin(Model_P.Gain3_Gain * Model_B.SteeringangleFR);
+}
+/* {S!d750}Lookup_n-D: '<S16>/2-D Lookup Table1' incorporates:
+ *  Constant: '<S4>/Constant2'
+ */
+rtb_uDLookupTable1_e = look2_binlxpw(Model_P.Constant2_Value_i, rtb_Subtract_p, Model_P.Fz, Model_P.SR, Model_P.Fx, Model_P.uDLookupTable1_maxIndex_l, 41U);
+/* {S!d752}Lookup_n-D: '<S17>/2-D Lookup Table' incorporates:
+ *  Constant: '<S4>/Constant3'
+ */
+rtb_Subtract_p = look2_binlxpw(Model_P.Constant3_Value, rtb_IC4_idx_2, Model_P.Fz, Model_P.SA, Model_P.Fy, Model_P.uDLookupTable_maxIndex_k, 41U);
+/* {S!d754}Lookup_n-D: '<S18>/2-D Lookup Table' incorporates:
+ *  Constant: '<S4>/Constant4'
+ */
+rtb_uDLookupTable = look2_binlxpw(Model_P.Constant4_Value, rtb_IC4_idx_3, Model_P.Fz, Model_P.SA, Model_P.Fy, Model_P.uDLookupTable_maxIndex_b, 41U);
+/* {S!d760}InitialCondition: '<S6>/IC1' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC1_FirstOutputTime == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC1_FirstOutputTime == Gain1_c_tmp)) {
+    Model_DW.IC1_FirstOutputTime = Gain1_c_tmp;
+    /* {S!d756}InitialCondition: '<S6>/IC1' */
+    Model_B.IC1 = Model_P.IC1_Value;
+} else {
+    /* {S!d758}InitialCondition: '<S6>/IC1' incorporates:
+ *  Gain: '<S12>/Gain'
+ *  Product: '<S12>/Product'
+ *  Product: '<S12>/Product1'
+ *  Product: '<S12>/Product2'
+ *  Product: '<S12>/Product3'
+ *  Sum: '<S12>/Add1'
+ */
+    Model_B.IC1 = (((((Model_B.Cos * rtb_BrakeTorque + Model_B.Cos1 * rtb_SteeringangleIN) - Model_B.Sin * rtb_MotorTorqueNm) - Model_B.Sin1 * rtb_uDLookupTable1_e) + rtb_Subtract_p) + rtb_uDLookupTable) * (1.0 / Model_P.mass);
+}
+/* {S!d762}Sum: '<S5>/Add1' incorporates:
+ *  Gain: '<S5>/Gain4'
+ *  Integrator: '<S5>/Integrator'
+ *  Integrator: '<S5>/Integrator1'
+ *  Product: '<S5>/Product8'
+ */
+Model_B.YACCms2 = Model_P.Gain4_Gain * Model_X.Integrator_CSTATE * Model_X.Integrator1_CSTATE_i + Model_B.IC1;
+/* {S!d768}InitialCondition: '<S5>/IC1' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC1_FirstOutputTime_d == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC1_FirstOutputTime_d == Gain1_c_tmp)) {
+    Model_DW.IC1_FirstOutputTime_d = Gain1_c_tmp;
+    /* {S!d764}InitialCondition: '<S5>/IC1' */
+    Model_B.V_yms = Model_P.IC1_Value_k;
+} else {
+    /* {S!d766}InitialCondition: '<S5>/IC1' incorporates:
+ *  Integrator: '<S5>/Integrator2'
+ */
+    Model_B.V_yms = Model_X.Integrator2_CSTATE_i;
+}
+if (%<(SLibCGIRIsSampleHit(1, 4))>) {
+    /* {S!d770}Trigonometry: '<S13>/Cos' */
+    Model_B.Cos_p = std::cos(Model_B.SteeringangleFL);
+    /* {S!d772}Trigonometry: '<S13>/Cos1' */
+    Model_B.Cos1_a = std::cos(Model_B.SteeringangleFR);
+    /* {S!d774}Trigonometry: '<S13>/Sin' incorporates:
+ *  Gain: '<S13>/Gain1'
+ */
+    Model_B.Sin_i = std::sin(Model_P.Gain1_Gain_f * Model_B.SteeringangleFL);
+    /* {S!d776}Trigonometry: '<S13>/Sin1' incorporates:
+ *  Gain: '<S13>/Gain2'
+ */
+    Model_B.Sin1_j = std::sin(Model_P.Gain2_Gain_l * Model_B.SteeringangleFR);
+}
+/* {S!d778}Lookup_n-D: '<S17>/2-D Lookup Table1' incorporates:
+ *  Constant: '<S4>/Constant3'
+ */
+rtb_IC4_idx_1 = look2_binlxpw(Model_P.Constant3_Value, rtb_IC4_idx_1, Model_P.Fz, Model_P.SR, Model_P.Fx, Model_P.uDLookupTable1_maxIndex_h, 41U);
+/* {S!d780}Lookup_n-D: '<S18>/2-D Lookup Table1' incorporates:
+ *  Constant: '<S4>/Constant4'
+ */
+rtb_IC4_idx_2 = look2_binlxpw(Model_P.Constant4_Value, rtb_IC5_idx_3, Model_P.Fz, Model_P.SR, Model_P.Fx, Model_P.uDLookupTable1_maxIndex_h2, 41U);
+/* {S!d786}InitialCondition: '<S6>/IC' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC_FirstOutputTime_f == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC_FirstOutputTime_f == Gain1_c_tmp)) {
+    Model_DW.IC_FirstOutputTime_f = Gain1_c_tmp;
+    /* {S!d782}InitialCondition: '<S6>/IC' */
+    Model_B.IC = Model_P.IC_Value_n;
+} else {
+    /* {S!d784}InitialCondition: '<S6>/IC' incorporates:
+ *  Gain: '<S13>/Gain'
+ *  Gain: '<S1>/Gain5'
+ *  Product: '<S13>/Product'
+ *  Product: '<S13>/Product1'
+ *  Product: '<S13>/Product2'
+ *  Product: '<S13>/Product3'
+ *  Sum: '<S13>/Add1'
+ */
+    Model_B.IC = ((((((Model_B.Cos_p * rtb_MotorTorqueNm + Model_B.Cos1_a * rtb_uDLookupTable1_e) + rtb_IC4_idx_1) + rtb_IC4_idx_2) + Model_B.Sin_i * rtb_BrakeTorque) + Model_B.Sin1_j * rtb_SteeringangleIN) - Model_P.Cd * rtb_Gain2) * (1.0 / Model_P.mass);
+}
+if (%<(SLibCGIRIsSampleHit(1, 4))>) {
+    /* {S!d788}Trigonometry: '<S14>/Cos' */
+    Model_B.Cos_b = std::cos(Model_B.SteeringangleFL);
+    /* {S!d790}Trigonometry: '<S14>/Cos1' */
+    Model_B.Cos1_b = std::cos(Model_B.SteeringangleFR);
+    /* {S!d792}Trigonometry: '<S14>/Sin' incorporates:
+ *  Gain: '<S14>/Gain1'
+ */
+    Model_B.Sin_ib = std::sin(Model_P.Gain1_Gain_b * Model_B.SteeringangleFL);
+    /* {S!d794}Trigonometry: '<S14>/Sin1' incorporates:
+ *  Gain: '<S14>/Gain4'
+ */
+    Model_B.Sin1_h = std::sin(Model_P.Gain4_Gain_g * Model_B.SteeringangleFR);
+}
+/* {S!d800}InitialCondition: '<S6>/IC2' incorporates:
+ *  InitialCondition: '<S5>/IC'
+ */
+if ((Model_DW.IC2_FirstOutputTime_j == %<LibGetMathConstant(LibRealNonFinite("-inf"), FcnGetDataTypeIdFromName("double"))>) || (Model_DW.IC2_FirstOutputTime_j == Gain1_c_tmp)) {
+    Model_DW.IC2_FirstOutputTime_j = Gain1_c_tmp;
+    /* {S!d796}InitialCondition: '<S6>/IC2' */
+    Model_B.IC2 = Model_P.IC2_Value_b;
+} else {
+    /* {S!d798}InitialCondition: '<S6>/IC2' incorporates:
+ *  Gain: '<S14>/Gain'
+ *  Gain: '<S14>/Gain10'
+ *  Gain: '<S14>/Gain11'
+ *  Gain: '<S14>/Gain12'
+ *  Gain: '<S14>/Gain13'
+ *  Gain: '<S14>/Gain14'
+ *  Gain: '<S14>/Gain15'
+ *  Gain: '<S14>/Gain2'
+ *  Gain: '<S14>/Gain5'
+ *  Gain: '<S14>/Gain6'
+ *  Gain: '<S14>/Gain7'
+ *  Gain: '<S14>/Gain8'
+ *  Gain: '<S14>/Gain9'
+ *  Product: '<S14>/Product'
+ *  Product: '<S14>/Product1'
+ *  Product: '<S14>/Product2'
+ *  Product: '<S14>/Product3'
+ *  Product: '<S14>/Product4'
+ *  Product: '<S14>/Product5'
+ *  Product: '<S14>/Product6'
+ *  Product: '<S14>/Product7'
+ *  Sum: '<S14>/Add3'
+ */
+    Model_B.IC2 = (((((((((((Model_B.Cos_b * rtb_MotorTorqueNm * Model_P.half_track + Model_B.Cos1_b * rtb_uDLookupTable1_e * -Model_P.half_track) + Model_P.half_track * rtb_IC4_idx_1) + -Model_P.half_track * rtb_IC4_idx_2) + Model_B.Sin_ib * rtb_BrakeTorque * Model_P.half_track) + Model_B.Sin1_h * rtb_SteeringangleIN * -Model_P.half_track) + -Model_P.lr * rtb_Subtract_p) + -Model_P.lr * rtb_uDLookupTable) + Model_B.Cos_b * rtb_BrakeTorque * Model_P.lf) + Model_B.Cos1_b * rtb_SteeringangleIN * Model_P.lf) + Model_B.Sin_ib * rtb_MotorTorqueNm * -Model_P.lf) + Model_B.Sin1_h * rtb_uDLookupTable1_e * -Model_P.lf) * (1.0 / Model_P.Iz_wehicle);
+}
+/* {S!d802}Gain: '<S34>/Gain1' incorporates:
+ *  Constant: '<S34>/Constant4'
+ *  Product: '<S34>/Product'
+ *  Sum: '<S34>/Add1'
+ */
+Model_B.Gain1 = ((0.0 - Model_P.tire_radius * rtb_MotorTorqueNm) - Model_B.BrakeTorque) * (1.0 / Model_P.Iz_wheel);
+/* {S!d804}Gain: '<S35>/Gain1' incorporates:
+ *  Constant: '<S35>/Constant4'
+ *  Product: '<S35>/Product'
+ *  Sum: '<S35>/Add1'
+ */
+Model_B.Gain1_b = ((0.0 - Model_P.tire_radius * rtb_uDLookupTable1_e) - Model_B.BrakeTorque) * (1.0 / Model_P.Iz_wheel);
+/* {S!d806}Sum: '<S36>/Add2' incorporates:
+ *  Sum: '<S37>/Add2'
+ */
+Gain1_c_tmp = Model_B.MotorTorque - Model_B.BrakeTorque;
+/* {S!d808}Gain: '<S36>/Gain1' incorporates:
+ *  Constant: '<S36>/Constant4'
+ *  Product: '<S36>/Product'
+ *  Sum: '<S36>/Add2'
+ */
+Model_B.Gain1_c = (Gain1_c_tmp - Model_P.tire_radius * rtb_IC4_idx_1) * (1.0 / Model_P.Iz_wheel);
+/* {S!d810}Gain: '<S37>/Gain1' incorporates:
+ *  Constant: '<S37>/Constant4'
+ *  Product: '<S37>/Product'
+ *  Sum: '<S37>/Add2'
+ */
+Model_B.Gain1_n = (Gain1_c_tmp - Model_P.tire_radius * rtb_IC4_idx_2) * (1.0 / Model_P.Iz_wheel);
+%<SLibInsertSolverResetCode()>\
+%closefile cfgTxt
+%<cfgTxt>
+%<LibSetSystemField(system, "CachedOutputLocalVars", localVarDecl)>
+%endfunction
+%function OutputsFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Outputs(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 2, fcnProtoType)>
+%endfunction
