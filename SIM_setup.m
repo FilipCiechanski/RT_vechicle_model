@@ -49,7 +49,8 @@ R_effective_br_disk_r = 0.0895;
 
 %Powertrain
 Max_Torque = 29.1;
-Motor_maximum_torque =29.1;
+Motor_maximum_torque = 29.1;
+Transmission_gear_ratio = 12.9;
 
     %Ustawienia momentu
 
