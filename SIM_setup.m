@@ -8,44 +8,43 @@ friction_coeficient = 1;
 CoG_x = 0.755;
 CoG_y = 0;
 CoG_z = 0.328;
-mass = 300; %bolid + lekki kierowca
+Mass = 300; %bolid + lekki kierowca
 Default_Fz_F = 62*g;
 Default_Fz_R = 79*g;
 Iz_wehicle = 120;
 Iz_wheel = 0.15;
-lateral_load_transfer_distribution = 0.55; % 1 - all distributtion on rear
+Lateral_load_transfer_distribution = 0.55; % 1 - all distributtion on rear
 
 %Aero
 Cd = 1.387;
 Cl = 3.299;
 A = 1.12;
-aero_balance = 0.55;
+Aero_balance = 0.55;
 
 % suspension
-lf = 0.770;
-lr = 0.755;
-wheel_base = 1.525;
-half_track = 0.6;
+Lf = 0.770;
+Lr = 0.755;
+Wheel_base = 1.525;
+Half_track = 0.6;
 
 % tires
-tire_radius = 0.203;
-wheel_rolling_resistance = 0.055;
-dataFy = xlsread("Tabela_sil.xlsx");
-dataFx = xlsread("Tabela_sil.xlsx", 2);
-Fz = dataFy(2:end,1);
-SA = dataFy(1,2:end);
-Fy = dataFy(2:end,2:end);
-SR = dataFx(1,2:end);
-Fx = dataFx(2:end,2:end);
+Tire_radius = 0.203;
+Wheel_rolling_resistance = 0.055;
+Data_Fy = xlsread("Tabela_sil.xlsx");
+Data_Fx = xlsread("Tabela_sil.xlsx", 2);
+Fz = Data_Fy(2:end,1);
+SA = Data_Fy(1,2:end);
+Fy = Data_Fy(2:end,2:end);
+SR = Data_Fx(1,2:end);
+Fx = Data_Fx(2:end,2:end);
 
 %Brakes
-F_br_coef_of_friction = 0.56;
-F_br_piston_area = 506.71/1e6;
-F_effective_br_disk_r = 0.0905;
-R_br_coef_of_friction = 0.56;
-R_br_piston_area = 506.71/1e6;
-R_effective_br_disk_r = 0.0895;
-
+Br_coef_of_friction_F = 0.56;
+Br_pistons_area_F = 506.71/1e6;
+Effective_br_disk_r_F = 0.0905;
+Br_coef_of_friction_R = 0.56;
+Br_pistons_area_R = 506.71/1e6;
+Effective_br_disk_r_R = 0.0895;
 
 %Powertrain
 Max_Torque = 29.1;
