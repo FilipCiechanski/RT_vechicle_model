@@ -51,8 +51,7 @@ Max_Torque = 29.1;
 Motor_maximum_torque = 29.1;
 Transmission_gear_ratio = 12.9;
 
-    %Ustawienia momentu
-
+%Ustawienia momentu
 Torque_limit_min = Motor_maximum_torque*0.1; % [Nm] Ustawienie momentu minimalne
 Torque_limit_2 = Motor_maximum_torque*0.2; % [Nm] Ustawienie momentu 2
 Torque_limit_3 = Motor_maximum_torque*0.3; % [Nm] Ustawienie momentu 3
@@ -64,8 +63,7 @@ Torque_limit_8 = Motor_maximum_torque*0.8; % [Nm] Ustawienie momentu 8
 Torque_limit_9 = 29.1; % [Nm] Ustawienie momentu 9
 Torque_limit_max = Motor_maximum_torque; % [Nm] Ustawienie momentu maksymalne
 
-    %Ograniczenia momentu regen brakingu
-
+%Ograniczenia momentu regen brakingu
 RB_torque_setting_1 = -2; % [Nm] Ustawienie regen brakingu 1 (maksymalny ujemny moment)
 RB_torque_setting_2 = -4; % [Nm] Ustawienie regen brakingu 2 (maksymalny ujemny moment)
 RB_torque_setting_3 = -6; % [Nm] Ustawienie regen brakingu 3 (maksymalny ujemny moment)
@@ -78,8 +76,7 @@ RB_torque_setting_9 = -18; % [Nm] Ustawienie regen brakingu 9 (maksymalny ujemny
 RB_torque_setting_10 = -20; % [Nm] Ustawienie regen brakingu 10 (maksymalny ujemny moment)
 
 
-   %Torque Vectoring Understeer Gradient
-
+%Torque Vectoring Understeer Gradient
 TV_understeer_gradient_1 = -0.5;
 TV_understeer_gradient_2 = -0.1;
 TV_understeer_gradient_3 = 0.06;
@@ -91,8 +88,7 @@ TV_understeer_gradient_8 = 0.01;
 TV_understeer_gradient_9 = 0.005;
 TV_understeer_gradient_10 = 0.002;
 
-   %Torque Vectoring RB Understeer Gradient
-
+%Torque Vectoring RB Understeer Gradient
 TV_RB_understeer_gradient_1 = -0.5;
 TV_RB_understeer_gradient_2 = -0.1;
 TV_RB_understeer_gradient_3 = 0.08;
