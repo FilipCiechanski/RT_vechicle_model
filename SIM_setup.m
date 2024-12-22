@@ -1,4 +1,5 @@
 % Otoczenie
+start_time = 709; % Sekunda startu symulacji
 
 g = 9.81;
 air_density = 1.29;
