@@ -1,6 +1,11 @@
-% Otoczenie
+% Warunki początkowe
 start_time = 3109; % Sekunda startu symulacji
+%start_velocity = 0; % Prędkość na starcie symulacji
 
+%Pobieranie z logów dla ułatwienia
+start_velocity = Xsens_MTI_670_vel.Value(find(Xsens_MTI_670_vel.Time > start_time, 1)) * 1000 / 3600;
+
+% Otoczenie
 g = 9.81;
 air_density = 1.29;
 friction_coeficient = 1;
@@ -40,11 +45,11 @@ SR = Data_Fx(1,2:end);
 Fx = Data_Fx(2:end,2:end);
 
 %Brakes
-Br_coef_of_friction_F = 0.56;
-Br_pistons_area_F = 506.71/1e6;
+Br_coef_of_friction_F = 0.25;
+Br_pistons_area_F = 3617.26/1e6;
 Effective_br_disk_r_F = 0.0905;
-Br_coef_of_friction_R = 0.56;
-Br_pistons_area_R = 506.71/1e6;
+Br_coef_of_friction_R = 0.25;
+Br_pistons_area_R = 2026.83/1e6;
 Effective_br_disk_r_R = 0.0895;
 
 %Powertrain
