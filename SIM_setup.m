@@ -1,5 +1,5 @@
 % Warunki początkowe
-start_time = 3109; % Sekunda startu symulacji
+start_time = 1208; % Sekunda startu symulacji
 %start_velocity = 0; % Prędkość na starcie symulacji
 
 %Pobieranie z logów dla ułatwienia
