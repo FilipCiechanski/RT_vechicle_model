@@ -1,5 +1,5 @@
 % Warunki początkowe
-start_time = 1208; % Sekunda startu symulacji
+start_time = 1427; % Sekunda startu symulacji
 %start_velocity = 0; % Prędkość na starcie symulacji
 
 %Pobieranie z logów dla ułatwienia
@@ -36,15 +36,18 @@ Half_track = 0.6;
 % tires
 Tire_radius = 0.203;
 Wheel_rolling_resistance = 0.055;
-Data_Fy = xlsread("Tabela_sil.xlsx");
-Data_Fx = xlsread("Tabela_sil.xlsx", 2);
-Fz = Data_Fy(2:end,1);
-SA = Data_Fy(1,2:end);
-Fy = Data_Fy(2:end,2:end);
-SR = Data_Fx(1,2:end);
-Fx = Data_Fx(2:end,2:end);
+Data_Fy = readmatrix("Tabela_sil.xlsx");
+Data_Fx = readmatrix("Tabela_sil.xlsx", "Sheet", 2);
+Fz = Data_Fy(2:end,2);
+SA = Data_Fy(1,3:end);
+Fy = Data_Fy(2:end,3:end);
+SR = Data_Fx(1,3:end);
+Fx = Data_Fx(2:end,3:end);
 
 %Brakes
+Lock_brake_balance = false;
+Front_brake_balance = 0.0; % exact if locked, else adjustment
+
 Br_coef_of_friction_F = 0.25;
 Br_pistons_area_F = 3617.26/1e6;
 Effective_br_disk_r_F = 0.0905;
