@@ -1,5 +1,5 @@
 % Warunki początkowe
-start_time = 1427; % Sekunda startu symulacji
+start_time = 1428; % Sekunda startu symulacji
 %start_velocity = 0; % Prędkość na starcie symulacji
 
 %Pobieranie z logów dla ułatwienia
@@ -48,10 +48,10 @@ Fx = Data_Fx(2:end,3:end);
 Lock_brake_balance = false;
 Front_brake_balance = 0.0; % exact if locked, else adjustment
 
-Br_coef_of_friction_F = 0.25;
+Br_coef_of_friction_F = 0.32;
 Br_pistons_area_F = 3617.26/1e6;
 Effective_br_disk_r_F = 0.0905;
-Br_coef_of_friction_R = 0.25;
+Br_coef_of_friction_R = 0.32;
 Br_pistons_area_R = 2026.83/1e6;
 Effective_br_disk_r_R = 0.0895;
 
