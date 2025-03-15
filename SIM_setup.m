@@ -48,15 +48,19 @@ Fx = Data_Fx(2:end,3:end);
 Lock_brake_balance = false;
 Front_brake_balance = 0.0; % exact if locked, else adjustment
 
-Br_coef_of_friction_F = 0.32;
+Br_coef_of_friction_F = 0.33;
 Br_pistons_area_F = 3617.26/1e6;
 Effective_br_disk_r_F = 0.0905;
-Br_coef_of_friction_R = 0.32;
+Br_coef_of_friction_R = 0.33;
 Br_pistons_area_R = 2026.83/1e6;
 Effective_br_disk_r_R = 0.0895;
 
+%Regen braking
+Front_desired_brake_p_balance = 0.55;
+Front_brake_pump_area = 153.94;
+Rear_brake_pump_area = 198.56;
+
 %Powertrain
-Max_Torque = 29.1;
 Motor_maximum_torque = 29.1;
 Transmission_gear_ratio = 12.9;
 
