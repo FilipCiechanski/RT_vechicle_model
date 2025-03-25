@@ -56,12 +56,13 @@ Br_pistons_area_R = 2026.83/1e6;
 Effective_br_disk_r_R = 0.0895;
 
 %Regen braking
-Front_desired_brake_p_balance = 0.55;
+Front_desired_brake_p_balance = 0.6;
 Front_brake_pump_area = 153.94;
 Rear_brake_pump_area = 198.56;
 
 %Powertrain
 Motor_maximum_torque = 29.1;
+Motor_maximum_power = 35366;
 Transmission_gear_ratio = 12.9;
 
 %Ustawienia momentu
