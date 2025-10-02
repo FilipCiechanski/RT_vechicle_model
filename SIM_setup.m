@@ -2,8 +2,8 @@
 start_time = 1188; %Sekunda startu symulacji
 run_number = 2;
 manual = 1;
-data_time = 1;
-
+data_time = 5;
+    
 if run_number <= 1
     if manual == 1
         start_velocity_x = 0;
@@ -42,7 +42,7 @@ end
 
 Vx_APPS_ON = 1; % 1 - APPS na PID; 0 - APPS z logów
 Aeromaps_ON = 0; %1 - aeromapy włączone; 0 - stałe ClA, CdA i balans; !!!TYLKO DLA RT15e I DALEJ!!!
-TV_ON = 0;
+TV_ON = 1;
 
 % Otoczenie
 g = 9.81;
