@@ -1,7 +1,7 @@
 % Overall parameters
 
     %Mass and Inertia
-    Vehicle_mass = 185; %masa bolidu
+    Vehicle_mass = 210; %masa bolidu
     Driver_mass = 80; %masa kierowcy
     Mass = Vehicle_mass + Driver_mass; %masa bolidu z kierowcą
     Iz_wehicle = 120;
@@ -16,7 +16,7 @@
 Wheelbase = 1.525;
 Track_Front = 1.2;
 Track_Rear = 1.18;
-Lf = Wheelbase - CoG_x;
+Lf = CoG_x;
 Lr = Wheelbase - Lf;
 
     %Setup

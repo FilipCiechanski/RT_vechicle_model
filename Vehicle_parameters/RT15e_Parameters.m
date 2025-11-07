@@ -1,10 +1,10 @@
 % Overall parameters
 
     %Mass and Inertia
-    Vehicle_mass = 210; %masa bolidu
+    Vehicle_mass = 185; %masa bolidu
     Driver_mass = 80; %masa kierowcy
     Mass = Vehicle_mass + Driver_mass; %masa bolidu z kierowcą
-    Iz_wehicle = 120;
+    Iz_wehicle = 130;
 
     %Center of Gravity
     CoG_x = 0.77460;
@@ -31,6 +31,12 @@ Lr = Wheelbase - Lf;
         Static_Camber_FR = 0;
         Static_Camber_RL = 0;
         Static_Camber_RR = 0;
+
+        %Pressures [bar]
+        Tire_pressure_FL = 0.8;
+        Tire_pressure_FR = 0.8;
+        Tire_pressure_RL = 0.8;
+        Tire_pressure_RR = 0.8;
 
     %Load Transfer
     Default_Fz_F = g*(Mass*(Lr/Wheelbase));
@@ -74,7 +80,7 @@ Aero_balance = 55; % [%Front]
 
 % tires
 Tire_radius = 0.203;
-Iz_wheel = 0.15;
+Iz_wheel = 0.6;
 Wheel_rolling_resistance = 0.055;
 Data_Fy = readmatrix("Tabela_sil.xlsx");
 Data_Fx = readmatrix("Tabela_sil.xlsx", "Sheet", 2);
@@ -107,10 +113,10 @@ Rear_brake_pump_area = 198.56;
 Motor_maximum_torque = 29.1;
 Motor_maximum_power = 35366;
 Gear_ratio = 12.9;
-
+PRT_efficiency = 0.85;
 
 %Ustawienia momentu
-Torque_limit_set = 10;
+Torque_limit_set = 8;
 Torque_limit_min = Motor_maximum_torque*0.1; % [Nm] Ustawienie momentu minimalne
 Torque_limit_2 = Motor_maximum_torque*0.2; % [Nm] Ustawienie momentu 2
 Torque_limit_3 = Motor_maximum_torque*0.3; % [Nm] Ustawienie momentu 3

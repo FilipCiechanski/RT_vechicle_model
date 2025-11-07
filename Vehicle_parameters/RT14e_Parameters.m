@@ -9,7 +9,7 @@
     %Center of Gravity
     CoG_x = 0.755;
     CoG_y = 0;
-    CoG_z = 0.35;
+    CoG_z = 0.28;
 
 
 % suspension
@@ -32,6 +32,12 @@ Lr = Wheelbase - Lf;
         Static_Camber_RL = 0;
         Static_Camber_RR = 0;
 
+        %Pressures [bar]
+        Tire_pressure_FL = 0.8;
+        Tire_pressure_FR = 0.8;
+        Tire_pressure_RL = 0.8;
+        Tire_pressure_RR = 0.8;
+
     %Load Transfer
     Default_Fz_F = g*(Mass*(Lr/Wheelbase));
     Default_Fz_R = g*(Mass*(Lf/Wheelbase));
@@ -39,7 +45,7 @@ Lr = Wheelbase - Lf;
     Default_Fz_FR = Default_Fz_F/2 - (Default_Fz_F*CoG_y/Track_Front);
     Default_Fz_RL = Default_Fz_R/2 + (Default_Fz_R*CoG_y/Track_Rear);
     Default_Fz_RR = Default_Fz_R/2 - (Default_Fz_R*CoG_y/Track_Rear);
-    LLTD = 0.45; % % na przód
+    LLTD = 0.50; % % na przód
 
     %Steering
     Data_Steering = readmatrix("Steering.xlsx","Sheet",1);
@@ -49,15 +55,15 @@ Lr = Wheelbase - Lf;
 
 %Aero
 A = 1.1;
-CdA = 1.31*A;
+CdA = 0.9*A;
 ClA = 3.3*A;
 Aero_balance = 55; % [%Front]
 
 
 % tires
-Tire_radius = 0.203;
-Iz_wheel = 0.15;
-Wheel_rolling_resistance = 0.055;
+Tire_radius = 0.205;
+Iz_wheel = 0.4;
+Wheel_rolling_resistance = 0.06;
 Data_Fy = readmatrix("Tabela_sil.xlsx");
 Data_Fx = readmatrix("Tabela_sil.xlsx", "Sheet", 2);
 Fz = Data_Fy(2:end,2);
@@ -71,10 +77,10 @@ Fx = Data_Fx(2:end,3:end);
 Lock_brake_balance = false;
 Front_brake_balance = 0.0; % exact if locked, else adjustment
 
-Br_coef_of_friction_F = 0.33;
+Br_coef_of_friction_F = 0.48;
 Br_pistons_area_F = 3617.26/1e6;
 Effective_br_disk_r_F = 0.0905;
-Br_coef_of_friction_R = 0.33;
+Br_coef_of_friction_R = 0.48;
 Br_pistons_area_R = 2026.83/1e6;
 Effective_br_disk_r_R = 0.0895;
 
@@ -89,17 +95,18 @@ Rear_brake_pump_area = 198.56;
 Motor_maximum_torque = 29.1;
 Motor_maximum_power = 35366;
 Gear_ratio = 12.9;
+PRT_efficiency = 0.95;
 
 
 %Ustawienia momentu
-Torque_limit_set = 10;
+Torque_limit_set = 7;
 Torque_limit_min = Motor_maximum_torque*0.1; % [Nm] Ustawienie momentu minimalne
 Torque_limit_2 = Motor_maximum_torque*0.2; % [Nm] Ustawienie momentu 2
 Torque_limit_3 = Motor_maximum_torque*0.3; % [Nm] Ustawienie momentu 3
 Torque_limit_4 = Motor_maximum_torque*0.4; % [Nm] Ustawienie momentu 4
 Torque_limit_5 = Motor_maximum_torque*0.5; % [Nm] Ustawienie momentu 5
 Torque_limit_6 = Motor_maximum_torque*0.6; % [Nm] Ustawienie momentu 6
-Torque_limit_7 = Motor_maximum_torque*0.7; % [Nm] Ustawienie momentu 7
+Torque_limit_7 = Motor_maximum_torque*0.7; % [Nm] Ustawienie     momentu 7
 Torque_limit_8 = Motor_maximum_torque*0.8; % [Nm] Ustawienie momentu 8
 Torque_limit_9 = 29.1; % [Nm] Ustawienie momentu 9
 Torque_limit_max = Motor_maximum_torque; % [Nm] Ustawienie momentu maksymalne

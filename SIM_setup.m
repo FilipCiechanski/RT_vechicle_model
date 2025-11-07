@@ -1,12 +1,27 @@
 % Initial Conditions
-start_time = 1188; %Sekunda startu symulacji
-run_number = 2;
+start_time = 1.187554837937151e+03; %Sekunda startu symulacji
+run_number = 1;
 manual = 1;
-data_time = 5;
-    
+data_time = 50;
+steering_offset = 0;
+
+%Conditions
+Vx_APPS_ON = 0; % 1 - APPS na PID; 0 - APPS z logów
+Aeromaps_ON = 1; %1 - aeromapy włączone; 0 - stałe ClA, CdA i balans; !!!TYLKO DLA RT15e I DALEJ!!!
+TV_ON = 0;
+
+%Manual Skidpad Configuration
+Constant_vel = 1; % 1 - stała prędkość i promień; 0 - stały promień
+Corner_radius = 8.5;
+Skid_side = 1; %Kierunek skida; 1 - prawo; 0 - lewo
+
+% Otoczenie
+g = 9.81;
+air_density = 1.2;
+
 if run_number <= 1
     if manual == 1
-        start_velocity_x = 0;
+        start_velocity_x = 9;
         start_velocity_y = 0;
         start_acc_x = 0;
         start_acc_y = 0; 
@@ -22,29 +37,21 @@ if run_number <= 1
     end
 
 else
-    start_velocity_x_ts = resample(out.Vel_X,data_time);
-    start_velocity_y_ts = resample(out.Vel_Y,data_time);
-    start_acc_x_ts = resample(out.Acc_X,data_time);
-    start_acc_y_ts= resample(out.Acc_Y,data_time);
-    start_yaw_rate_ts = resample(out.Vel_Yaw,data_time);
-    start_yaw_acc_ts = resample(out.Acc_Yaw,data_time);
+    vel_x_simout = struct('Time',out.vel_x.time,'Value',out.vel_x.signals.values);
+    vel_y_simout = struct('Time',out.vel_y.time,'Value',out.vel_y.signals.values);
+    acc_x_simout = struct('Time',out.acc_x.time,'Value',out.acc_x.signals.values);
+    acc_y_simout = struct('Time',out.acc_y.time,'Value',out.acc_y.signals.values);
+    yaw_rate_simout = struct('Time',out.vel_yaw.time,'Value',out.vel_yaw.signals.values);
+    yaw_acc_simout = struct('Time',out.acc_yaw.time,'Value',out.acc_yaw.signals.values);
     
-    start_velocity_x = double(start_velocity_x_ts.Data);
-    start_velocity_y = double(start_velocity_y_ts.Data);
-    start_acc_x = double(start_acc_x_ts.Data);
-    start_acc_y = double(start_acc_y_ts.Data);
-    start_yaw_rate = double(start_yaw_rate_ts.Data);
-    start_yaw_acc = double(start_yaw_acc_ts.Data);
+    [~, idx] = min(abs(vel_x_simout.Time - data_time)); %znajdowanie najbliższego punktu do wybranego czasu
+
+    start_velocity_x = vel_x_simout.Value(idx);
+    start_velocity_y = vel_y_simout.Value(idx);
+    start_acc_x = acc_x_simout.Value(idx);
+    start_acc_y = acc_y_simout.Value(idx);
+    start_yaw_rate = yaw_rate_simout.Value(idx);
+    start_yaw_acc = yaw_acc_simout.Value(idx);
 end
 
 
-%Conditions
-
-Vx_APPS_ON = 1; % 1 - APPS na PID; 0 - APPS z logów
-Aeromaps_ON = 0; %1 - aeromapy włączone; 0 - stałe ClA, CdA i balans; !!!TYLKO DLA RT15e I DALEJ!!!
-TV_ON = 1;
-
-% Otoczenie
-g = 9.81;
-air_density = 1.2;
-friction_coeficient = 1;
