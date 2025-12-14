@@ -1,14 +1,22 @@
 % Initial Conditions
-start_time = 1.187554837937151e+03; %Sekunda startu symulacji
+start_time = 2.282366875588375e+03; %Sekunda startu symulacji
 run_number = 1;
-manual = 1;
+manual = 0;
 data_time = 50;
 steering_offset = 0;
 
 %Conditions
 Vx_APPS_ON = 0; % 1 - APPS na PID; 0 - APPS z logów
-Aeromaps_ON = 1; %1 - aeromapy włączone; 0 - stałe ClA, CdA i balans; !!!TYLKO DLA RT15e I DALEJ!!!
+Aeromaps_ON = 0; %1 - aeromapy włączone; 0 - stałe ClA, CdA i balans; !!!TYLKO DLA RT15e I DALEJ!!!
 TV_ON = 0;
+
+%Scenarios
+addpath("Scenarios")
+Track = buildRadius(20);
+stop_normal_dev = 0;
+stop_angle_dev = 0;
+start_normal_dev = stop_normal_dev;
+start_angle_dev = stop_angle_dev;
 
 %Manual Skidpad Configuration
 Constant_vel = 1; % 1 - stała prędkość i promień; 0 - stały promień
