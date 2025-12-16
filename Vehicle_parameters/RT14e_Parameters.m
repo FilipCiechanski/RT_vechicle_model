@@ -9,7 +9,7 @@
     %Center of Gravity
     CoG_x = 0.755;
     CoG_y = 0;
-    CoG_z = 0.32;
+    CoG_z = 0.28;
 
 
 % suspension
@@ -17,8 +17,7 @@ Wheelbase = 1.525;
 Track_Front = 1.2;
 Track_Rear = 1.18;
 Lf = Wheelbase - CoG_x;
-Lr = CoG_x;
-
+Lr = Wheelbase - Lf;
 
     %Setup
         %Toe [deg]
@@ -39,17 +38,14 @@ Lr = CoG_x;
         Tire_pressure_RL = 0.8;
         Tire_pressure_RR = 0.8;
 
-    %Load Distribution
+    %Load Transfer
     Default_Fz_F = g*(Mass*(Lr/Wheelbase));
     Default_Fz_R = g*(Mass*(Lf/Wheelbase));
     Default_Fz_FL = Default_Fz_F/2 + (Default_Fz_F*CoG_y/Track_Front);
     Default_Fz_FR = Default_Fz_F/2 - (Default_Fz_F*CoG_y/Track_Front);
     Default_Fz_RL = Default_Fz_R/2 + (Default_Fz_R*CoG_y/Track_Rear);
     Default_Fz_RR = Default_Fz_R/2 - (Default_Fz_R*CoG_y/Track_Rear);
-    LLTD = 0.5; % % na przód
-    Cross_Percentage = (Default_Fz_FR+Default_Fz_RL)/(Mass*g)
-    Calculated_mass = (Default_Fz_FL+Default_Fz_FR+Default_Fz_RL+Default_Fz_RR)/g
-
+    LLTD = 0.50; % % na przód
 
     %Steering
     Data_Steering = readmatrix("Steering.xlsx","Sheet",1);

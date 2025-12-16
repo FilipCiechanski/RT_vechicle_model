@@ -1,19 +1,19 @@
 % Initial Conditions
 start_time = 1.187554837937151e+03; %Sekunda startu symulacji
-run_number = 2;
+run_number = 1;
 manual = 1;
-data_time = 6;
+data_time = 50;
 steering_offset = 0;
 
 %Conditions
 Vx_APPS_ON = 0; % 1 - APPS na PID; 0 - APPS z logów
-Aeromaps_ON = 0; %1 - aeromapy włączone; 0 - stałe ClA, CdA i balans; !!!TYLKO DLA RT15e I DALEJ!!!
+Aeromaps_ON = 1; %1 - aeromapy włączone; 0 - stałe ClA, CdA i balans; !!!TYLKO DLA RT15e I DALEJ!!!
 TV_ON = 0;
 
 %Manual Skidpad Configuration
 Constant_vel = 1; % 1 - stała prędkość i promień; 0 - stały promień
 Corner_radius = 8.5;
-Skid_side = 0; %Kierunek skida; 1 - prawo; 0 - lewo
+Skid_side = 1; %Kierunek skida; 1 - prawo; 0 - lewo
 
 % Otoczenie
 g = 9.81;
@@ -46,7 +46,7 @@ else
     
     [~, idx] = min(abs(vel_x_simout.Time - data_time)); %znajdowanie najbliższego punktu do wybranego czasu
 
-    start_velocity_x = vel_x_simout.Value(idx)+1;
+    start_velocity_x = vel_x_simout.Value(idx);
     start_velocity_y = vel_y_simout.Value(idx);
     start_acc_x = acc_x_simout.Value(idx);
     start_acc_y = acc_y_simout.Value(idx);
