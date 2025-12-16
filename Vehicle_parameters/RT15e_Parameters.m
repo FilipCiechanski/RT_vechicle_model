@@ -62,6 +62,8 @@ Aero_balance = 55; % [%Front]
 
     %Aeromaps
     
+    
+
         %FW Setups STD
         FW_Position = 3; %Pozycja flap na FW; 1 - najmniejszy docisk, 8 - największy
         Data_FW_STD = readmatrix("Aeromaps.xlsx","Sheet",1);
