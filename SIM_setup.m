@@ -13,10 +13,6 @@ TV_ON = 0;
 %Scenarios
 addpath("Scenarios")
 Track = buildRadius(20);
-stop_normal_dev = 0;
-stop_angle_dev = 0;
-start_normal_dev = stop_normal_dev;
-start_angle_dev = stop_angle_dev;
 
 %Manual Skidpad Configuration
 Constant_vel = 1; % 1 - stała prędkość i promień; 0 - stały promień

@@ -1,9 +1,6 @@
-function Track = buildSkidpad(entryLength, exitLength, defaultWidth)
-% buildSkidpad - pełen tor skidpad (∞) z pionowym wjazdem i wyjazdem
+function Track = buildSkidpad(entryLength, exitLength)
 
-if nargin < 1, entryLength = 10; end
-if nargin < 2, exitLength  = 10; end
-if nargin < 3, defaultWidth = 3; end
+defaultWidth = 3;
 
 %% --- parametry skidpadu
 D_center = 18.25;      % odległość między centrami pętli
