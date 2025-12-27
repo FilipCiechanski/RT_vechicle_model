@@ -7,9 +7,9 @@
     Iz_wehicle = 120;
 
     %Center of Gravity
-    CoG_x = 0.755;
+    CoG_x = 0.765;
     CoG_y = 0;
-    CoG_z = 0.28;
+    CoG_z = 0.325;
 
 
 % suspension
@@ -42,10 +42,10 @@ Lr = Wheelbase - Lf;
     Default_Fz_F = g*(Mass*(Lr/Wheelbase));
     Default_Fz_R = g*(Mass*(Lf/Wheelbase));
     Default_Fz_FL = Default_Fz_F/2 + (Default_Fz_F*CoG_y/Track_Front);
-    Default_Fz_FR = Default_Fz_F/2 - (Default_Fz_F*CoG_y/Track_Front);
-    Default_Fz_RL = Default_Fz_R/2 + (Default_Fz_R*CoG_y/Track_Rear);
+    Default_Fz_FR = Default_Fz_F/2 - (Default_Fz_F*CoG_y/Track_Front)-00;
+    Default_Fz_RL = Default_Fz_R/2 + (Default_Fz_R*CoG_y/Track_Rear)+00;
     Default_Fz_RR = Default_Fz_R/2 - (Default_Fz_R*CoG_y/Track_Rear);
-    LLTD = 0.50; % % na przód
+    LLTD = 0.45; % % na przód
 
     %Steering
     Data_Steering = readmatrix("Steering.xlsx","Sheet",1);
